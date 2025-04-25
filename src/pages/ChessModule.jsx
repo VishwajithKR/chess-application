@@ -126,9 +126,14 @@ const ChessModule = () => {
   
     if (image) {
       console.log("10: A piece was clicked");
-      const name = image?.split("/").pop().split(".")[0];
-      const isWhite = name.endsWith("_w");
+  //     const name = image?.split("/").pop().split(".")[0];
+  //     const isWhite = name.endsWith("_w");
   
+  const nameMatch = image?.match(/([a-z]+_[bw])\.?/i); 
+  const name = nameMatch ? nameMatch[1] : "";
+  const isWhite = name.endsWith("_w");
+  console.log(isWhite,"2222222222222222")
+
       if (isWhite !== currentTurnIsWhite) {
         console.log("11: Wrong player's turn");
         return;
@@ -136,7 +141,7 @@ const ChessModule = () => {
   
       let possibleMoves = [];
   
-      if (name.includes("pawn")) {
+      if (name.startsWith("pawn")) {
         console.log("12: Calculating pawn moves",name);
         possibleMoves = getPawnMoves(index, board, isWhite);
       } else if (name.startsWith("knight")) {
