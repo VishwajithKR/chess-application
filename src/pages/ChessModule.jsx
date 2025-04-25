@@ -21,6 +21,7 @@ import {
   getRookMoves,
   isKingInCheck,
   isCheckmate,
+  getPieceInfo,
 } from "../utills/iconFunction";
 
 const ChessModule = () => {
@@ -47,6 +48,7 @@ const ChessModule = () => {
   const [isCheck, setIsCheck] = useState("");
   const [history, setHistory] = useState([]);
 
+
   const handleClick = (index, image) => {
     console.log("1: handleClick triggered");
   
@@ -61,8 +63,7 @@ const ChessModule = () => {
       console.log("2: A move is being made");
   
       const movingPiece = board[selectedIndex];
-      const pieceName = movingPiece?.split("/").pop().split(".")[0];
-      const pieceIsWhite = pieceName.endsWith("_w");
+      const { isWhite: pieceIsWhite } = getPieceInfo(movingPiece);
   
       if (pieceIsWhite !== currentTurnIsWhite) {
         console.log("3: Not the correct turn for the selected piece");
@@ -74,8 +75,8 @@ const ChessModule = () => {
       const captured = board[index];
       if (captured) {
         console.log("4: A capture is happening");
-        const capturedName = captured?.split("/").pop().split(".")[0];
-        if (capturedName.endsWith("_w")) {
+        const { isWhite: capturedIsWhite } = getPieceInfo(captured);
+        if (capturedIsWhite) {
           setCapturedWhite((prev) => [...prev, captured]);
         } else {
           setCapturedBlack((prev) => [...prev, captured]);
@@ -126,14 +127,10 @@ const ChessModule = () => {
   
     if (image) {
       console.log("10: A piece was clicked");
-  //     const name = image?.split("/").pop().split(".")[0];
-  //     const isWhite = name.endsWith("_w");
   
-  const nameMatch = image?.match(/([a-z]+_[bw])\.?/i); 
-  const name = nameMatch ? nameMatch[1] : "";
-  const isWhite = name.endsWith("_w");
-  console.log(isWhite,"2222222222222222")
-
+      const { name, isWhite } = getPieceInfo(image);
+      console.log(isWhite, "2222222222222222");
+  
       if (isWhite !== currentTurnIsWhite) {
         console.log("11: Wrong player's turn");
         return;
@@ -142,7 +139,7 @@ const ChessModule = () => {
       let possibleMoves = [];
   
       if (name.startsWith("pawn")) {
-        console.log("12: Calculating pawn moves",name);
+        console.log("12: Calculating pawn moves", name);
         possibleMoves = getPawnMoves(index, board, isWhite);
       } else if (name.startsWith("knight")) {
         console.log("13: Calculating knight moves");

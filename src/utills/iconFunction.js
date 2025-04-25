@@ -267,3 +267,11 @@ export const getKingMoves = (index, board, isWhite) => {
   return moves;
 };
 
+export const getPieceInfo = (imgPath) => {
+  const match = imgPath?.match(/([a-z]+_[bw])\.?/i);
+  const name = match ? match[1] : "";
+  const isWhite = name.endsWith("_w");
+  return { name, isWhite };
+};
+
+
