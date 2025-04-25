@@ -48,26 +48,32 @@ const ChessModule = () => {
   const [history, setHistory] = useState([]);
 
   const handleClick = (index, image) => {
-    console.log("first")
+    console.log("1: handleClick triggered");
+  
     const currentPiece = board[selectedIndex];
     const currentTurnIsWhite = turn % 2 === 1;
-
+  
     if (
       selectedIndex !== null &&
       isActive.includes(index) &&
       selectedIndex !== index
     ) {
+      console.log("2: A move is being made");
+  
       const movingPiece = board[selectedIndex];
       const pieceName = movingPiece?.split("/").pop().split(".")[0];
       const pieceIsWhite = pieceName.endsWith("_w");
-
-      if (pieceIsWhite !== currentTurnIsWhite) return;
-
+  
+      if (pieceIsWhite !== currentTurnIsWhite) {
+        console.log("3: Not the correct turn for the selected piece");
+        return;
+      }
+  
       const newBoard = [...board];
-
-      // Capture
+  
       const captured = board[index];
       if (captured) {
+        console.log("4: A capture is happening");
         const capturedName = captured?.split("/").pop().split(".")[0];
         if (capturedName.endsWith("_w")) {
           setCapturedWhite((prev) => [...prev, captured]);
@@ -75,6 +81,8 @@ const ChessModule = () => {
           setCapturedBlack((prev) => [...prev, captured]);
         }
       }
+  
+      console.log("5: Saving to history");
       setHistory((prev) => [
         ...prev,
         {
@@ -84,61 +92,79 @@ const ChessModule = () => {
           capturedBlack: [...capturedBlack],
         },
       ]);
+  
       newBoard[index] = movingPiece;
       newBoard[selectedIndex] = null;
       setBoard(newBoard);
       setIsActive([]);
       setSelectedIndex(null);
-
+  
       const nextTurn = turn + 1;
       setTurn(nextTurn);
-
+  
       const isNextWhiteTurn = nextTurn % 2 === 1;
       if (isKingInCheck(newBoard, isNextWhiteTurn)) {
+        console.log("6: Check detected");
         if (isCheckmate(newBoard, isNextWhiteTurn)) {
+          console.log("7: Checkmate detected");
           setTimeout(() => {
             setIsCheck(`${isNextWhiteTurn ? "White" : "Black"} Game Over!`);
           }, 100);
         } else {
+          console.log("8: Just a check, not checkmate");
           setTimeout(() => {
             setIsCheck(`${isNextWhiteTurn ? "White" : "Black"} is in check!`);
           }, 100);
         }
-      }else{
+      } else {
+        console.log("9: No check");
         setIsCheck("");
       }
+  
       return;
     }
-
+  
     if (image) {
+      console.log("10: A piece was clicked");
       const name = image?.split("/").pop().split(".")[0];
       const isWhite = name.endsWith("_w");
-
-      if (isWhite !== currentTurnIsWhite) return;
-
+  
+      if (isWhite !== currentTurnIsWhite) {
+        console.log("11: Wrong player's turn");
+        return;
+      }
+  
       let possibleMoves = [];
-
+  
       if (name.startsWith("pawn")) {
+        console.log("12: Calculating pawn moves");
         possibleMoves = getPawnMoves(index, board, isWhite);
       } else if (name.startsWith("knight")) {
+        console.log("13: Calculating knight moves");
         possibleMoves = getKnightMoves(index, board, isWhite);
       } else if (name.startsWith("bishop")) {
+        console.log("14: Calculating bishop moves");
         possibleMoves = getBishopMoves(index, board, isWhite);
       } else if (name.startsWith("rook")) {
+        console.log("15: Calculating rook moves");
         possibleMoves = getRookMoves(index, board, isWhite);
       } else if (name.startsWith("queen")) {
+        console.log("16: Calculating queen moves");
         possibleMoves = getQueenMoves(index, board, isWhite);
       } else if (name.startsWith("king")) {
+        console.log("17: Calculating king moves");
         possibleMoves = getKingMoves(index, board, isWhite);
       }
-
+  
       setIsActive(possibleMoves);
       setSelectedIndex(index);
     } else {
+      console.log("18: Empty square clicked - clearing selection");
       setIsActive([]);
       setSelectedIndex(null);
     }
   };
+  
   const handleBack = () => {
     if (history.length === 0) return;
   
