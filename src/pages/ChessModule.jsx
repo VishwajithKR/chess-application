@@ -208,7 +208,7 @@ const ChessModule = () => {
                   img={img}
                   isActive={isActive}
                   selected={i === selectedIndex}
-                  onClick={() => isCheck.includes("Game Over!") ?"": handleClick(i, img)}
+                  onClick={() => handleClick(i, img)}
                   background={
                     (Math.floor(i / 8) + (i % 8)) % 2 === 1
                       ? "bg-blue-600/20"
