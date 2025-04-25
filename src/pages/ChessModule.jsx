@@ -48,6 +48,7 @@ const ChessModule = () => {
   const [history, setHistory] = useState([]);
 
   const handleClick = (index, image) => {
+    console.log("first")
     const currentPiece = board[selectedIndex];
     const currentTurnIsWhite = turn % 2 === 1;
 
@@ -208,7 +209,7 @@ const ChessModule = () => {
                   img={img}
                   isActive={isActive}
                   selected={i === selectedIndex}
-                  onClick={() => handleClick(i, img)}
+                  onClick={() => isCheck.includes("Game Over!") ? null : handleClick(i, img)}
                   background={
                     (Math.floor(i / 8) + (i % 8)) % 2 === 1
                       ? "bg-blue-600/20"
