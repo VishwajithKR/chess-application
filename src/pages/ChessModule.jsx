@@ -136,8 +136,8 @@ const ChessModule = () => {
   
       let possibleMoves = [];
   
-      if (name.startsWith("pawn")) {
-        console.log("12: Calculating pawn moves");
+      if (name.includes("pawn")) {
+        console.log("12: Calculating pawn moves",name);
         possibleMoves = getPawnMoves(index, board, isWhite);
       } else if (name.startsWith("knight")) {
         console.log("13: Calculating knight moves");
