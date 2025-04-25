@@ -99,6 +99,11 @@ export const getBishopMoves = (index, board, isWhite) => {
         const targetName = target.split("/").pop().split(".")[0];
         const isTargetWhite = targetName.endsWith("_w");
 
+        // If the target is a friendly piece (same color), stop moving
+        if (isTargetWhite === isWhite) {
+          break; // Can't move beyond friendly pieces
+        }
+
         // If the target is an enemy piece, we can capture it
         if (isTargetWhite !== isWhite) {
           moves.push(next); // Add to available moves (capture)
@@ -113,6 +118,7 @@ export const getBishopMoves = (index, board, isWhite) => {
 
   return moves;
 };
+
 
   
 
