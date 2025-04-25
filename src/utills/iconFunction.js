@@ -77,39 +77,37 @@ export const isKingInCheck = (board, isWhiteTurn) => {
 
 export const getBishopMoves = (index, board, isWhite) => {
   const moves = [];
-  const directions = [-9, -7, 7, 9];
+  const directions = [-9, -7, 7, 9]; // Diagonal directions
   
-  const isSameRow = (a, b) => Math.floor(a / 8) === Math.floor(b / 8);
-
   for (let dir of directions) {
     let curr = index;
 
     while (true) {
       const next = curr + dir;
 
-      // Out of bounds: check explicitly for column overflows on diagonals
+      // Check if the next position is out of bounds (either too low or too high)
       if (next < 0 || next >= 64) break;
-      
-      // Prevent wrap-around on rows: ensure the move stays within the bounds
-      const currRow = Math.floor(curr / 8);
-      const nextRow = Math.floor(next / 8);
-      
-      if (Math.abs(currRow - nextRow) > 1) break;
+
+      // Ensure no column wraparound: for example, a bishop can't move from column 'a' to column 'h' diagonally
+      const currColumn = curr % 8;
+      const nextColumn = next % 8;
+      if (Math.abs(currColumn - nextColumn) > 1) break; // If the column difference is more than 1, break
 
       const target = board[next];
 
       if (target) {
-        const targetName = target?.split("/").pop().split(".")[0];
+        const targetName = target.split("/").pop().split(".")[0];
         const isTargetWhite = targetName.endsWith("_w");
 
+        // If the target is an enemy piece, we can capture it
         if (isTargetWhite !== isWhite) {
-          moves.push(next); // enemy – can capture
+          moves.push(next); // Add to available moves (capture)
         }
-        break; // stop here, can't go beyond
+        break; // Stop further movement in this direction
       }
 
-      moves.push(next);
-      curr = next;
+      moves.push(next); // Add the empty square to available moves
+      curr = next; // Move to the next square along the diagonal
     }
   }
 
