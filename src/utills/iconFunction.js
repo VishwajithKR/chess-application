@@ -76,44 +76,46 @@ export const isKingInCheck = (board, isWhiteTurn) => {
 
 
 export const getBishopMoves = (index, board, isWhite) => {
-    const moves = [];
-    const directions = [-9, -7, 7, 9];
-    
-    const isSameRow = (a, b) => Math.floor(a / 8) === Math.floor(b / 8);
+  const moves = [];
+  const directions = [-9, -7, 7, 9];
   
-    for (let dir of directions) {
-      let curr = index;
-  
-      while (true) {
-        const next = curr + dir;
-  
-        // Out of bounds
-        if (next < 0 || next >= 64) break;
-  
-        // Prevent wrap-around on rows
-        const colDiff = Math.abs((curr % 8) - (next % 8));
-        const rowDiff = Math.abs(Math.floor(curr / 8) - Math.floor(next / 8));
-        if (colDiff !== rowDiff) break;
-  
-        const target = board[next];
-  
-        if (target) {
-          const targetName = target?.split("/").pop().split(".")[0];
-          const isTargetWhite = targetName.endsWith("_w");
-  
-          if (isTargetWhite !== isWhite) {
-            moves.push(next); // enemy – can capture
-          }
-          break; // stop here, can't go beyond
+  const isSameRow = (a, b) => Math.floor(a / 8) === Math.floor(b / 8);
+
+  for (let dir of directions) {
+    let curr = index;
+
+    while (true) {
+      const next = curr + dir;
+
+      // Out of bounds: check explicitly for column overflows on diagonals
+      if (next < 0 || next >= 64) break;
+      
+      // Prevent wrap-around on rows: ensure the move stays within the bounds
+      const currRow = Math.floor(curr / 8);
+      const nextRow = Math.floor(next / 8);
+      
+      if (Math.abs(currRow - nextRow) > 1) break;
+
+      const target = board[next];
+
+      if (target) {
+        const targetName = target?.split("/").pop().split(".")[0];
+        const isTargetWhite = targetName.endsWith("_w");
+
+        if (isTargetWhite !== isWhite) {
+          moves.push(next); // enemy – can capture
         }
-  
-        moves.push(next);
-        curr = next;
+        break; // stop here, can't go beyond
       }
+
+      moves.push(next);
+      curr = next;
     }
-  
-    return moves;
-  };
+  }
+
+  return moves;
+};
+
   
 
   export const getKnightMoves = (index, board, isWhite) => {
