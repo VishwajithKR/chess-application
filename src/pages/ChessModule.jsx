@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import CommonBox from "../components/CommonBox";
+
 import pawn_b from "../assets/images/pawn_b.png";
 import pawn_w from "../assets/images/pawn_w.png";
 import knight_b from "../assets/images/knight_b.png";
@@ -12,6 +13,7 @@ import queen_b from "../assets/images/queen_b.png";
 import queen_w from "../assets/images/queen_w.png";
 import rook_b from "../assets/images/rook_b.png";
 import rook_w from "../assets/images/rook_w.png";
+
 import {
   getBishopMoves,
   getKingMoves,
@@ -27,6 +29,7 @@ import {
 const ChessModule = () => {
   const letters = ["A", "B", "C", "D", "E", "F", "G", "H"];
   const numbers = [8, 7, 6, 5, 4, 3, 2, 1];
+
   const initialBoard = [
     rook_b, knight_b, bishop_b, queen_b, king_b, bishop_b, knight_b, rook_b,
     pawn_b, pawn_b, pawn_b, pawn_b, pawn_b, pawn_b, pawn_b, pawn_b,
@@ -37,9 +40,8 @@ const ChessModule = () => {
     pawn_w, pawn_w, pawn_w, pawn_w, pawn_w, pawn_w, pawn_w, pawn_w,
     rook_w, knight_w, bishop_w, queen_w, king_w, bishop_w, knight_w, rook_w,
   ];
-  
-  const [board, setBoard] = useState([...initialBoard]);
 
+  const [board, setBoard] = useState([...initialBoard]);
   const [selectedIndex, setSelectedIndex] = useState(null);
   const [turn, setTurn] = useState(1);
   const [isActive, setIsActive] = useState([]);
@@ -48,33 +50,23 @@ const ChessModule = () => {
   const [isCheck, setIsCheck] = useState("");
   const [history, setHistory] = useState([]);
 
-
   const handleClick = (index, image) => {
-    console.log("1: handleClick triggered");
-  
-    const currentPiece = board[selectedIndex];
     const currentTurnIsWhite = turn % 2 === 1;
-  
+
     if (
       selectedIndex !== null &&
       isActive.includes(index) &&
       selectedIndex !== index
     ) {
-      console.log("2: A move is being made");
-  
       const movingPiece = board[selectedIndex];
       const { isWhite: pieceIsWhite } = getPieceInfo(movingPiece);
-  
-      if (pieceIsWhite !== currentTurnIsWhite) {
-        console.log("3: Not the correct turn for the selected piece");
-        return;
-      }
-  
+
+      if (pieceIsWhite !== currentTurnIsWhite) return;
+
       const newBoard = [...board];
-  
       const captured = board[index];
+
       if (captured) {
-        console.log("4: A capture is happening");
         const { isWhite: capturedIsWhite } = getPieceInfo(captured);
         if (capturedIsWhite) {
           setCapturedWhite((prev) => [...prev, captured]);
@@ -82,8 +74,7 @@ const ChessModule = () => {
           setCapturedBlack((prev) => [...prev, captured]);
         }
       }
-  
-      console.log("5: Saving to history");
+
       setHistory((prev) => [
         ...prev,
         {
@@ -93,83 +84,66 @@ const ChessModule = () => {
           capturedBlack: [...capturedBlack],
         },
       ]);
-  
+
       newBoard[index] = movingPiece;
       newBoard[selectedIndex] = null;
       setBoard(newBoard);
       setIsActive([]);
       setSelectedIndex(null);
-  
+
       const nextTurn = turn + 1;
       setTurn(nextTurn);
-  
+
       const isNextWhiteTurn = nextTurn % 2 === 1;
       if (isKingInCheck(newBoard, isNextWhiteTurn)) {
-        console.log("6: Check detected");
         if (isCheckmate(newBoard, isNextWhiteTurn)) {
-          console.log("7: Checkmate detected");
           setTimeout(() => {
             setIsCheck(`${isNextWhiteTurn ? "White" : "Black"} Game Over!`);
           }, 100);
         } else {
-          console.log("8: Just a check, not checkmate");
           setTimeout(() => {
             setIsCheck(`${isNextWhiteTurn ? "White" : "Black"} is in check!`);
           }, 100);
         }
       } else {
-        console.log("9: No check");
         setIsCheck("");
       }
-  
+
       return;
     }
-  
+
     if (image) {
-      console.log("10: A piece was clicked");
-  
       const { name, isWhite } = getPieceInfo(image);
-      console.log(isWhite, "2222222222222222");
-  
-      if (isWhite !== currentTurnIsWhite) {
-        console.log("11: Wrong player's turn");
-        return;
-      }
-  
+
+      if (isWhite !== currentTurnIsWhite) return;
+
       let possibleMoves = [];
-  
+
       if (name.startsWith("pawn")) {
-        console.log("12: Calculating pawn moves", name);
         possibleMoves = getPawnMoves(index, board, isWhite);
       } else if (name.startsWith("knight")) {
-        console.log("13: Calculating knight moves");
         possibleMoves = getKnightMoves(index, board, isWhite);
       } else if (name.startsWith("bishop")) {
-        console.log("14: Calculating bishop moves");
         possibleMoves = getBishopMoves(index, board, isWhite);
       } else if (name.startsWith("rook")) {
-        console.log("15: Calculating rook moves");
         possibleMoves = getRookMoves(index, board, isWhite);
       } else if (name.startsWith("queen")) {
-        console.log("16: Calculating queen moves");
         possibleMoves = getQueenMoves(index, board, isWhite);
       } else if (name.startsWith("king")) {
-        console.log("17: Calculating king moves");
         possibleMoves = getKingMoves(index, board, isWhite);
       }
-  
+
       setIsActive(possibleMoves);
       setSelectedIndex(index);
     } else {
-      console.log("18: Empty square clicked - clearing selection");
       setIsActive([]);
       setSelectedIndex(null);
     }
   };
-  
+
   const handleBack = () => {
     if (history.length === 0) return;
-  
+
     const prevState = history[history.length - 1];
     setBoard(prevState.board);
     setTurn(prevState.turn);
@@ -180,6 +154,7 @@ const ChessModule = () => {
     setIsActive([]);
     setIsCheck("");
   };
+
   const handleReset = () => {
     setBoard([...initialBoard]);
     setTurn(1);
@@ -190,11 +165,10 @@ const ChessModule = () => {
     setIsCheck("");
     setHistory([]);
   };
-  
 
   return (
     <div className="flex flex-col h-screen items-center justify-center bg-blue-50 select-none">
-     {isCheck && <div className="absolute -top-4 left-0 right-0 text-center text-2xl font-semibold text-red-500 p-4">{isCheck}</div>}
+      {isCheck && <div className="absolute -top-4 left-0 right-0 text-center text-2xl font-semibold text-red-500 p-4">{isCheck}</div>}
       <h1 className="text-2xl font-bold mb-4">Ultimate Chess</h1>
       <div className="flex items-center justify-center">
         {/* Left - Captured Black Pieces */}
@@ -255,20 +229,16 @@ const ChessModule = () => {
             <img key={i} src={img} alt="" className="w-6 h-6" />
           ))}
         </div>
-      </div>'
+      </div>
+
       <div className="flex px-2 justify-between w-[600px]">
+        <button onClick={handleBack} className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition">
+          Back
+        </button>
 
-      <button onClick={handleBack}
-             className=" px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition"
-      >
-        Back
-      </button>
-
-      <button onClick={handleReset}
-             className=" px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition"
-      >
-        Reset
-      </button>
+        <button onClick={handleReset} className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition">
+          Reset
+        </button>
       </div>
 
       <h2 className="text-xl font-semibold mb-2 mt-4">
