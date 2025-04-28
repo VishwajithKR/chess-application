@@ -228,7 +228,7 @@ const ChessModule = () => {
         </div>
       </div>
 
-      <div className="flex px-2 justify-between w-[600px]">
+      <div className="flex px-2 mt-4 justify-between w-[600px]">
         <button onClick={handleBack} className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition">
           Back
         </button>
