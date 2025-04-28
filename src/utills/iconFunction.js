@@ -55,7 +55,7 @@ export const isKingInCheck = (board, isWhiteTurn) => {
 
     let moves = [];
     if (name.startsWith("pawn")) {
-      moves = getPawnMoves(i, board, !isWhiteTurn, true); // attackOnly flag
+      moves = getPawnMoves(i, board, !isWhiteTurn, true); 
     } else if (name.startsWith("knight")) {
       moves = getKnightMoves(i, board, !isWhiteTurn);
     } else if (name.startsWith("bishop")) {
@@ -77,45 +77,37 @@ export const isKingInCheck = (board, isWhiteTurn) => {
 
 export const getBishopMoves = (index, board, isWhite) => {
   const moves = [];
-  const directions = [-9, -7, 7, 9]; // Diagonal directions
+  const directions = [-9, -7, 7, 9];
   
   for (let dir of directions) {
     let curr = index;
 
     while (true) {
       const next = curr + dir;
-
-      // Check if the next position is out of bounds (either too low or too high)
       if (next < 0 || next >= 64) break;
-
-      // Ensure no column wraparound: for example, a bishop can't move from column 'a' to column 'h' diagonally
       const currColumn = curr % 8;
       const nextColumn = next % 8;
-      if (Math.abs(currColumn - nextColumn) > 1) break; // If the column difference is more than 1, break
-
+      if (Math.abs(currColumn - nextColumn) > 1) break;
       const target = board[next];
-
       if (target) {
-        const targetName = target.split("/").pop().split(".")[0];
+        const parts = target.split("/");
+        const fileNameWithExt = parts[parts.length - 1];
+        const targetName = fileNameWithExt.substring(0, fileNameWithExt.lastIndexOf('.'));
         const isTargetWhite = targetName.endsWith("_w");
-
-        // If the target is a friendly piece (same color), stop moving in this direction
+      
         if (isTargetWhite === isWhite) {
-          break; // Can't move beyond friendly pieces (white pieces for white bishop)
+          break; 
         }
-
-        // If the target is an enemy piece, we can capture it
         if (isTargetWhite !== isWhite) {
-          moves.push(next); // Add to available moves (capture)
+          moves.push(next); 
         }
-        break; // Stop further movement in this direction after capturing
+        break;
       }
-
-      moves.push(next); // Add the empty square to available moves
-      curr = next; // Move to the next square along the diagonal
+      
+      moves.push(next); 
+      curr = next; 
     }
   }
-
   return moves;
 };
 

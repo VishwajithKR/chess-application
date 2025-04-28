@@ -171,14 +171,12 @@ const ChessModule = () => {
       {isCheck && <div className="absolute -top-4 left-0 right-0 text-center text-2xl font-semibold text-red-500 p-4">{isCheck}</div>}
       <h1 className="text-2xl font-bold mb-4">Ultimate Chess</h1>
       <div className="flex items-center justify-center">
-        {/* Left - Captured Black Pieces */}
         <div className="w-[75px] flex flex-col gap-2 items-center">
           {capturedBlack.map((img, i) => (
             <img key={i} src={img} alt="" className="w-6 h-6" />
           ))}
         </div>
 
-        {/* Main Board */}
         <div className="flex">
           <div className="flex flex-col justify-center mr-2">
             {numbers.map((num) => (
@@ -223,7 +221,6 @@ const ChessModule = () => {
           </div>
         </div>
 
-        {/* Right - Captured White Pieces */}
         <div className="w-[75px] flex flex-col gap-2 items-center">
           {capturedWhite.map((img, i) => (
             <img key={i} src={img} alt="" className="w-6 h-6" />
